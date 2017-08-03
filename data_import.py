@@ -1,4 +1,3 @@
-import array
 import re
 import math
 import pandas as pd
@@ -9,6 +8,7 @@ from bs4 import BeautifulSoup
 if __name__ == '__main__':
     
     def updateColumns(columns, page, position, value):
+        value = int(value)
         try:
             columns[page][position].append(value)
         except:
@@ -21,7 +21,6 @@ if __name__ == '__main__':
         
     colsOnPages = {}
     actCol = 0
-    #nextCol = False
     probVal = False
     columns = ['Gender','Age','BP_percentile', 'BPSys_5Hp', 'BPSys_10Hp', 'BPSys_25Hp', 'BPSys_50Hp', 'BPSys_75Hp', 'BPSys_90Hp', 'BPSys_95Hp',
                'BPDia_5Hp', 'BPDia_10Hp', 'BPDia_25Hp', 'BPDia_50Hp', 'BPDia_75Hp', 'BPDia_90Hp', 'BPDia_95Hp'
@@ -98,9 +97,11 @@ if __name__ == '__main__':
         BP = pd.concat([BP,Age], axis = 1)
         BP = pd.concat([BP,Pct], axis = 1)
         BPdb = pd.concat([BPdb, BP], axis = 0)
-        BPdb.reset_index(drop=True)
-    BPdb.to_csv('test.csv')
-            
-        
+    BPdb = BPdb.reset_index(drop=True)
+    BPdb.to_csv('BPdata.csv')
+    #result = BPdb.loc[(BPdb['Age'] == 5) & (BPdb['Gender'] == 'M') & (BPdb['BPSys_5Hp'] < 110)]
+    #print(result.loc[result.index.values[-1],'BP_percentile'])
+    
+    
             
             
