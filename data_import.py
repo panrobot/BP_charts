@@ -63,12 +63,10 @@ if __name__ == '__main__':
                             #if it is not flush val and go to the next textline    
                             else:
                                 val = ''
-                            break
     percentiles = [50, 90, 95, 99]
     for key in colsOnPages.keys():            
         positions = list(colsOnPages[key].keys())
         positions.sort()
-        print('Strona {0}, kolumny: {1}'.format(key, positions))
         Pct = pd.DataFrame()
         Age = pd.DataFrame()
         BP = pd.DataFrame()
@@ -101,7 +99,7 @@ if __name__ == '__main__':
         BP = pd.concat([BP,Pct], axis = 1)
         BPdb = pd.concat([BPdb, BP], axis = 0)
         BPdb.reset_index(drop=True)
-    #BPdb.to_csv('test.csv')
+    BPdb.to_csv('test.csv')
             
         
             
