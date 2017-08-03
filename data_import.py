@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 
 if __name__ == '__main__':
     
-    colSys = [196,223,250,278,305,332,360]
+    #colSys = [196,223,250,278,305,332,360]
     actCol = 0
     nextCol = False
     with open('out.xml', 'r', encoding='utf-8') as XMLinput:
