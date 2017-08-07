@@ -20,14 +20,6 @@ if __name__ == '__main__':
     GirlsHeight_0_5 = data_import.importCSV('lhfa_girls_p_exp.txt')
     GirlsHeight_5_17 = data_import.importCSV('hfa_girls_perc_WHO2007_exp.txt')
     BPtable = data_import.importPDF(pdffile='child_tbl.pdf')
-    #with open('lhfa_boys_p_exp.txt', mode='r', encoding='utf-8') as boys_0_5:
-    #    BoysHeight_0_5 = pd.read_csv(boys_0_5, sep = '\s+', header = 0, index_col = 0)
-    #with open('hfa_boys_perc_WHO2007_exp.txt', mode='r', encoding='utf-8') as boys_5_17:
-    #    BoysHeight_5_17 = pd.read_csv(boys_5_17, sep = '\s+', header = 0, index_col = 0)
-    #with open('lhfa_girls_p_exp.txt', mode='r', encoding='utf-8') as girls_0_5:
-    #    GirlsHeight_0_5 = pd.read_csv(girls_0_5, sep = '\s+', header = 0, index_col = 0)
-    #with open('hfa_girls_perc_WHO2007_exp.txt', mode='r', encoding='utf-8') as girls_5_17:
-    #    GirlsHeight_5_17 = pd.read_csv(girls_5_17, sep = '\s+', header = 0, index_col = 0)
     dob = 0
     while dob == 0:
         dob = input('Enter date of birth as YYYY/MM/DD e.g 2000/12/01: ')
