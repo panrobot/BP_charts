@@ -1,11 +1,36 @@
 import re
 import math
 import pandas as pd
+import sys
 from bs4 import BeautifulSoup
+from pdfminer.pdfdocument import PDFDocument
+from pdfminer.pdfparser import PDFParser
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from pdfminer.pdfdevice import PDFDevice, TagExtractor
+from pdfminer.pdfpage import PDFPage
+from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
+from pdfminer.cmapdb import CMapDB
+from pdfminer.layout import LAParams
+from pdfminer.image import ImageWriter
+
+def importCSV(csvfile):
+     with open(csvfile, mode='r', encoding='utf-8') as csv:
+        outputDataFrame = pd.read_csv(csv, sep = '\s+', header = 0, index_col = 0)
+     return outputDataFrame
 
 
-
-if __name__ == '__main__':
+def importPDF(pdffile, outputXML='out.xml'):
+    
+    def PDFtoXML(pdffile):
+        rsrcmgr = PDFResourceManager(caching=False)
+        outfp = file(outputXML, mode='w')
+        device = XMLConverter(rsrcmgr, outfp, codec='utf-8', laparams=None)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        with open(pdffile, mode='rb', encoding='utf-8') as pdf:
+            for page in PDFPage.get_pages(pdf, caching=False, check_extractable=True):
+                interpreter.process_page(page)
+        device.close()
+        outfp.close()
     
     def updateColumns(columns, page, position, value):
         value = int(value)
@@ -18,7 +43,7 @@ if __name__ == '__main__':
                 columns[page][position] = [value]
         return columns
             
-        
+    PDFtoXML(pdffile)    
     colsOnPages = {}
     actCol = 0
     probVal = False
@@ -26,7 +51,7 @@ if __name__ == '__main__':
                'BPDia_5Hp', 'BPDia_10Hp', 'BPDia_25Hp', 'BPDia_50Hp', 'BPDia_75Hp', 'BPDia_90Hp', 'BPDia_95Hp'
                ]
     BPdb = pd.DataFrame()
-    with open('out.xml', 'r', encoding='utf-8') as XMLinput:
+    with open('outputXML', 'r', encoding='utf-8') as XMLinput:
         xml = BeautifulSoup(XMLinput, 'html.parser')
         pages = xml.find_all('page')
         val = ''
@@ -98,9 +123,11 @@ if __name__ == '__main__':
         BP = pd.concat([BP,Pct], axis = 1)
         BPdb = pd.concat([BPdb, BP], axis = 0)
     BPdb = BPdb.reset_index(drop=True)
-    BPdb.to_csv('BPdata.csv')
+    BPdb.to_csv('outputCSV')
+    return BPdb 
     #result = BPdb.loc[(BPdb['Age'] == 5) & (BPdb['Gender'] == 'M') & (BPdb['BPSys_5Hp'] < 110)]
     #print(result.loc[result.index.values[-1],'BP_percentile'])
+    
     
     
             
