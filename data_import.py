@@ -3,14 +3,13 @@ import math
 import pandas as pd
 import sys
 from bs4 import BeautifulSoup
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfparser import PDFParser
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-from pdfminer.pdfdevice import PDFDevice, TagExtractor
-from pdfminer.pdfpage import PDFPage
-from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
-from pdfminer.cmapdb import CMapDB
-from pdfminer.layout import LAParams
+import os
+#import logging
+#import six
+import pdfminer.settings
+pdfminer.settings.STRICT = False
+import pdfminer.high_level
+import pdfminer.layout
 from pdfminer.image import ImageWriter
 
 def importCSV(csvfile):
@@ -22,15 +21,12 @@ def importCSV(csvfile):
 def importPDF(pdffile, outputXML='out.xml'):
     
     def PDFtoXML(pdffile):
-        rsrcmgr = PDFResourceManager(caching=False)
-        outfp = file(outputXML, mode='w')
-        device = XMLConverter(rsrcmgr, outfp, codec='utf-8', laparams=None)
-        interpreter = PDFPageInterpreter(rsrcmgr, device)
-        with open(pdffile, mode='rb', encoding='utf-8') as pdf:
-            for page in PDFPage.get_pages(pdf, caching=False, check_extractable=True):
-                interpreter.process_page(page)
-        device.close()
-        outfp.close()
+        if os.path.exists(outputXML):
+            os.remove(outputXML)
+        out = open(outputXML, mode='wb')
+        with open(pdffile, mode='rb') as fp:
+            pdfminer.high_level.extract_text_to_fp(fp, output_type='xml', codec='utf-8', outfp = out)
+        
     
     def updateColumns(columns, page, position, value):
         value = int(value)
@@ -51,7 +47,7 @@ def importPDF(pdffile, outputXML='out.xml'):
                'BPDia_5Hp', 'BPDia_10Hp', 'BPDia_25Hp', 'BPDia_50Hp', 'BPDia_75Hp', 'BPDia_90Hp', 'BPDia_95Hp'
                ]
     BPdb = pd.DataFrame()
-    with open('outputXML', 'r', encoding='utf-8') as XMLinput:
+    with open(outputXML, 'r', encoding='utf-8') as XMLinput:
         xml = BeautifulSoup(XMLinput, 'html.parser')
         pages = xml.find_all('page')
         val = ''
