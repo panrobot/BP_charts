@@ -6,11 +6,11 @@ from bs4 import BeautifulSoup
 import os
 #import logging
 #import six
-import pdfminer.settings
-pdfminer.settings.STRICT = False
+#import pdfminer.settings
+#pdfminer.settings.STRICT = False
 import pdfminer.high_level
 import pdfminer.layout
-from pdfminer.image import ImageWriter
+#from pdfminer.image import ImageWriter
 
 def importCSV(csvfile):
      with open(csvfile, mode='r', encoding='utf-8') as csv:
@@ -18,14 +18,15 @@ def importCSV(csvfile):
      return outputDataFrame
 
 
-def importPDF(pdffile, outputXML='out.xml'):
+def importPDF(pdffile, outputXML='out.xml', outputCSV='out.csv'):
     
     def PDFtoXML(pdffile):
         if os.path.exists(outputXML):
             os.remove(outputXML)
+        laparams = pdfminer.layout.LAParams()
         out = open(outputXML, mode='wb')
         with open(pdffile, mode='rb') as fp:
-            pdfminer.high_level.extract_text_to_fp(fp, output_type='xml', codec='utf-8', outfp = out)
+            pdfminer.high_level.extract_text_to_fp(inf=fp, outfp = out, output_type='xml', laparams=laparams)
         
     
     def updateColumns(columns, page, position, value):
@@ -119,7 +120,9 @@ def importPDF(pdffile, outputXML='out.xml'):
         BP = pd.concat([BP,Pct], axis = 1)
         BPdb = pd.concat([BPdb, BP], axis = 0)
     BPdb = BPdb.reset_index(drop=True)
-    BPdb.to_csv('outputCSV')
+    if os.path.exists(outputCSV):
+        os.remove(outputCSV)
+    BPdb.to_csv(outputCSV)
     return BPdb 
     #result = BPdb.loc[(BPdb['Age'] == 5) & (BPdb['Gender'] == 'M') & (BPdb['BPSys_5Hp'] < 110)]
     #print(result.loc[result.index.values[-1],'BP_percentile'])
