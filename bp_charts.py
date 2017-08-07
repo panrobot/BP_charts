@@ -19,7 +19,7 @@ if __name__ == '__main__':
     BoysHeight_5_17 = data_import.importCSV('hfa_boys_perc_WHO2007_exp.txt')
     GirlsHeight_0_5 = data_import.importCSV('lhfa_girls_p_exp.txt')
     GirlsHeight_5_17 = data_import.importCSV('hfa_girls_perc_WHO2007_exp.txt')
-    BPtable = data_import.importPDF('child_tbl.pdf')
+    BPtable = data_import.importPDF(pdffile='child_tbl.pdf')
     #with open('lhfa_boys_p_exp.txt', mode='r', encoding='utf-8') as boys_0_5:
     #    BoysHeight_0_5 = pd.read_csv(boys_0_5, sep = '\s+', header = 0, index_col = 0)
     #with open('hfa_boys_perc_WHO2007_exp.txt', mode='r', encoding='utf-8') as boys_5_17:
@@ -97,3 +97,4 @@ if __name__ == '__main__':
             print('No BP dia specified - app looking for a norm values')
             bpsys = ''
             break
+    
