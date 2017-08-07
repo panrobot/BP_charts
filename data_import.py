@@ -4,13 +4,8 @@ import pandas as pd
 import sys
 from bs4 import BeautifulSoup
 import os
-#import logging
-#import six
-#import pdfminer.settings
-#pdfminer.settings.STRICT = False
 import pdfminer.high_level
 import pdfminer.layout
-#from pdfminer.image import ImageWriter
 
 def importCSV(csvfile):
      with open(csvfile, mode='r', encoding='utf-8') as csv:
@@ -124,8 +119,6 @@ def importPDF(pdffile, outputXML='out.xml', outputCSV='out.csv'):
         os.remove(outputCSV)
     BPdb.to_csv(outputCSV)
     return BPdb 
-    #result = BPdb.loc[(BPdb['Age'] == 5) & (BPdb['Gender'] == 'M') & (BPdb['BPSys_5Hp'] < 110)]
-    #print(result.loc[result.index.values[-1],'BP_percentile'])
     
     
     
