@@ -49,16 +49,7 @@ if __name__ == '__main__':
         return pct, p
                 
         
-    
-    #BoysHeight_0_5 = pd.DataFrame()
-    #BoysHeight_5_17 = pd.DataFrame()
-    #GirlsHeight_0_5 = pd.DataFrame()
-    #GirlsHeight_5_17 = pd.DataFrame()
     BPtable = pd.DataFrame()
-    #BoysHeight_0_5 = data_import.importCSV('lhfa_boys_p_exp.txt')
-    #BoysHeight_5_17 = data_import.importCSV('hfa_boys_perc_WHO2007_exp.txt')
-    #GirlsHeight_0_5 = data_import.importCSV('lhfa_girls_p_exp.txt')
-    #GirlsHeight_5_17 = data_import.importCSV('hfa_girls_perc_WHO2007_exp.txt')
     BPtable = data_import.importPDF(pdffile='child_tbl.pdf')
     dob = 0
     while dob == 0:
@@ -147,13 +138,4 @@ if __name__ == '__main__':
           format(gender, age, height, p, BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct].values[0],
                  BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct+7].values[0]))
     
-    
-    #result = BPtable[(BPtable['Age'] == int(age.days / 365)) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == 'M')]
-    #result = BPtable[(BPtable['Age'] == int(age.days / 365)) & (BPtable.iloc[:,pct] <= bpsys) & (BPtable['Gender'] == 'M')].loc[:,'BP_percentile'].values[-1]
-    #print(result)
-    #print(pct)
-    #result = BPtable[(BPtable['Age'] == int(age.days / 365)) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == 'M')].iloc[:,pct]
-    #print('For {0} {1} year(s) old {2} cm high (it\'s within {3} percentile) proper blood pressure is: systolic {4} mmHg, diastolic {5} mmHg'.
-    #      format('boy', int(age.days/365), height, p, BPtable[(BPtable['Age'] == int(age.days / 365)) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == 'M')].iloc[:,pct].values[0],
-    #             BPtable[(BPtable['Age'] == int(age.days / 365)) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == 'M')].iloc[:,pct+7].values[0]))
     
