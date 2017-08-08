@@ -9,7 +9,7 @@ import pdfminer.layout
 
 def importCSV(csvfile):
      with open(csvfile, mode='r', encoding='utf-8') as csv:
-        outputDataFrame = pd.read_csv(csv, sep = '\s+', header = 0, index_col = 0)
+        outputDataFrame = pd.read_csv(csv, sep = '\s+', header = 0)
      return outputDataFrame
 
 
