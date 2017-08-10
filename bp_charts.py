@@ -12,7 +12,7 @@ import matplotlib.ticker as ticker
 from cycler import cycler
 from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
 from mpl_toolkits.axes_grid1.inset_locator import mark_inset
-
+import numpy as np
 
 BoysHeight_0_5 = 'lhfa_boys_p_exp.txt'
 BoysHeight_5_17 = 'hfa_boys_perc_WHO2007_exp.txt'
@@ -22,14 +22,21 @@ GirlsHeight_5_17 = 'hfa_girls_perc_WHO2007_exp.txt'
 if __name__ == '__main__':
     
     plt.style.use('ggplot')
+    plt.rc('axes', prop_cycle=(cycler('color',['#a6611a','#dfc27d','#80cdc1','#018571','#737373','#d01c8b','#f1b6da','#f7f7f7','#000000','#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6']))) 
+    #fig = plt.figure(figsize=(8,10))
+    #fig = plt.figure(figsize=(8,10))
+    fig, axes = plt.subplots(nrows = 3, ncols= 1, figsize=(10,13))
+    ax = axes[0]
+   
+    
     def getHeightPercentile(height, dob, gender):
         percentiles = ['P01','P1','P3','P5','P10','P15','P25','P50','P75','P85','P90','P95','P97','P99','P999']
         age = dt.datetime.today() - dob
         genderTables = {'M' : {0 : BoysHeight_0_5, 1 : BoysHeight_5_17}, 'F' : {0: GirlsHeight_0_5, 1: GirlsHeight_5_17}}
         #graph config
         
-        plt.rc('axes', prop_cycle=(cycler('color',['#a6611a','#dfc27d','#80cdc1','#018571','#737373','#d01c8b','#f1b6da','#f7f7f7','#000000','#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6']))) 
-        fig, ax = plt.subplots(figsize=(8,10))
+        
+        #fig, ax = plt.subplots(figsize=(8,10))
         ax.set_ylabel('Height [cm]')
         
         ax.xaxis.set_major_locator(ticker.MaxNLocator(10))
@@ -75,11 +82,10 @@ if __name__ == '__main__':
             
         table.plot(ax = ax, x=table.iloc[:,0], y=percentiles, title=title, fontsize=10)
         
-        #plt.legend(bbox_to_anchor=(1.005, 1), loc=2, borderaxespad=0.)
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles[::-1], labels[::-1])
+        
+        
         ax.plot(dfAge, height, 'g*')
-        plt.xticks(rotation=45)
+        #plt.xticks(rotation=45)
           #ax2 = fig.add_axes([0.5, 0.3, 0.3, 0.5])
         idx = table[(table.iloc[:,0] == dfAge)].index.values[0]
            
@@ -107,11 +113,11 @@ if __name__ == '__main__':
         print(dfAge, x1, x2 , y1, y2)
         axins.set_xlim(x1, x2)
         axins.set_ylim(y1, y2)
-            
-            
         mark_inset(ax, axins, loc1=2, loc2=1, fc="none", ec="0.5")
         
-        fig.savefig('height.png')
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles[::-1], labels[::-1], bbox_to_anchor=(1, 1.05))
+        
         return pct, p
                 
         
@@ -186,25 +192,70 @@ if __name__ == '__main__':
             print('No BP dia specified - app looking for a norm values')
             bpsys = ''
             break'''
-    gender = 'F'
-    height = 140
-    bpsys = ''
+    gender = 'M'
+    height = 100
+    bpsys = 115
     bpdia = 57
-    dob = dt.datetime(2007,6,8)
+    dob = dt.datetime(2014,6,8)
     pct, p = getHeightPercentile(height, dob, gender)
     age = dt.datetime.today() - dob
     age = int(age.days / 30.4375 / 12)
     if age == 0:
         age = 1
     if bpsys:
+        y = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].loc[:,'BP_percentile']
+        x = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].iloc[:,pct]
+        axes[1].plot(x, y)
+        axes[1].set_title('Blood pressure norm for gender {0} {1} year(s) old \n {2} cm high (it\'s within {3} percentile) \n with blood pressure systolic {4} mmHg - it is within {5}th percentile'.
+          format(gender, age, height, p, bpsys, BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender) & (BPtable.iloc[:,pct] >= bpsys)].loc[:,'BP_percentile'].values[0]))
+        
+        axes[1].plot(bpsys, BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender) & (BPtable.iloc[:,pct] >= bpsys)].loc[:,'BP_percentile'].values[0], 'g*')
+        
+        axes[1].yaxis.set_major_locator(ticker.FixedLocator(y))
+        axes[1].xaxis.set_major_locator(ticker.FixedLocator(x))
+        axes[1].set_ylabel('Sys BP percentile')
+        axes[1].set_xlabel('Sys BP [mmHg]')
+        
+        y = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].loc[:,'BP_percentile']
+        x = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].iloc[:,pct+7]
+        axes[2].plot(x, y)
+        
+        axes[2].plot(bpdia, BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender) & (BPtable.iloc[:,pct+7] >= bpdia)].loc[:,'BP_percentile'].values[0], 'g*')
+        
+        axes[2].yaxis.set_major_locator(ticker.FixedLocator(y))
+        axes[2].xaxis.set_major_locator(ticker.FixedLocator(x))
+        axes[2].set_ylabel('Dia BP percentile')
+        axes[2].set_xlabel('Dia BP [mmHg]')
+        axes[2].set_title('Blood pressure norm for gender {0} {1} year(s) old \n {2} cm high (it\'s within {3} percentile) \n with blood pressure diastolic {4} mmHg - it is within {5}th percentile'.
+          format(gender, age, height, p, bpdia,BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender) & (BPtable.iloc[:,pct+7] >= bpdia)].loc[:,'BP_percentile'].values[0]))
+        
         result = BPtable[(BPtable['Age'] == age) & (BPtable.iloc[:,pct] <= bpsys) & (BPtable['Gender'] == gender)].loc[:,'BP_percentile']
         print('For gender {0} {1} year(s) old {2} cm high (it\'s within {3} percentile) with blood pressure systolic {4} mmHg - it is within {5}th percentile and for diastolic {6} mmHg it is within {7}th percentile of blood pressure norm'.
           format(gender, age, height, p, bpsys, BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender) & (BPtable.iloc[:,pct] >= bpsys)].loc[:,'BP_percentile'].values[0], bpdia,
                  BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender) & (BPtable.iloc[:,pct+7] >= bpdia)].loc[:,'BP_percentile'].values[0])) 
     else:
+        y = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].loc[:,'BP_percentile']
+        x = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].iloc[:,pct]
+        axes[1].plot(x, y)
+        axes[1].set_title('Blood pressure norms for gender {0} {1} year(s) old \n {2} cm high (it\'s within {3} percentile'.format(gender, age, height, p))
+        axes[1].plot(BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct].values[0], 90, 'g*')
+        axes[1].yaxis.set_major_locator(ticker.FixedLocator(y))
+        axes[1].xaxis.set_major_locator(ticker.FixedLocator(x))
+        axes[1].set_ylabel('Sys BP percentile')
+        axes[1].set_xlabel('Sys BP [mmHg]')
+        y = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].loc[:,'BP_percentile']
+        x = BPtable[(BPtable['Age'] == age) & (BPtable['Gender'] == gender)].iloc[:,pct+7]
+        axes[2].plot(x, y)
+        axes[2].plot(BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct+7].values[0], 90, 'g*')
+        axes[2].yaxis.set_major_locator(ticker.FixedLocator(y))
+        axes[2].xaxis.set_major_locator(ticker.FixedLocator(x))
+        axes[2].set_ylabel('Dia BP percentile')
+        axes[2].set_xlabel('Dia BP [mmHg]')
         result = BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)]
         print('For gender {0} {1} year(s) old {2} cm high (it\'s within {3} percentile) proper blood pressure is: systolic {4} mmHg, diastolic {5} mmHg'.
           format(gender, age, height, p, BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct].values[0],
                  BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct+7].values[0]))
     
     
+    
+    fig.savefig('height.png')
