@@ -2,7 +2,7 @@
 
 As hypertension is more and more common disease it is important (and pretty easy and inexpensive) to check own blood pressure.</br>
 For adults the norm is 120 mmHg for systolic blood pressure and 80 mmHg for diastolic. Any reading above this values is a hypertension.</br>
-For kids it is more complicated. You need to specify kid's: age, gender, and height to find if blood pressure is within norm.
+For kids it is more complicated. You need to specify kid's: age, gender, and height to find if blood pressure is within norm (systolic or diastolic blood pressure should not be equal or greater than 95th percentile).
 This script utylize WHO tables for kids height percentiles:
 <ul>
 <li>hfa_boys_perc_WHO2007_exp.txt</li>
