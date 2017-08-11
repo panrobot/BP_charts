@@ -117,9 +117,6 @@ if __name__ == '__main__':
         axins.set_xlim(x1, x2)
         axins.set_ylim(y1, y2)
         mark_inset(ax, axins, loc1=2, loc2=1, fc="none", ec="0.5")
-        
-        #ax.legend(handles[::-1], labels[::-1], bbox_to_anchor=(1, 1.05))
-        #
         handles, labels = ax.get_legend_handles_labels()
         lgd = ax.legend(handles[::-1], labels[::-1], bbox_to_anchor=(0., 1.02, 1., .102), fontsize = 7, loc=3, ncol=len(percentiles), mode="expand", borderaxespad=0.)
         
