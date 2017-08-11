@@ -22,10 +22,7 @@ GirlsHeight_5_17 = 'hfa_girls_perc_WHO2007_exp.txt'
 if __name__ == '__main__':
     
     plt.style.use('ggplot')
-    
     plt.rc('axes', prop_cycle=(cycler('color',['#a6611a','#dfc27d','#80cdc1','#018571','#737373','#d01c8b','#f1b6da','#f7f7f7','#000000','#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6']))) 
-    #fig = plt.figure(figsize=(8,10))
-    #fig = plt.figure(figsize=(8,10))
     fig, axes = plt.subplots(nrows = 3, ncols= 1, figsize=(10,13))
     ax = axes[0]
     lgd = None
@@ -35,9 +32,6 @@ if __name__ == '__main__':
         age = dt.datetime.today() - dob
         genderTables = {'M' : {0 : BoysHeight_0_5, 1 : BoysHeight_5_17}, 'F' : {0: GirlsHeight_0_5, 1: GirlsHeight_5_17}}
         #graph config
-        
-        
-        #fig, ax = plt.subplots(figsize=(8,10))
         ax.set_ylabel('Height [cm]')
         
         ax.xaxis.set_major_locator(ticker.MaxNLocator(10))
@@ -53,11 +47,6 @@ if __name__ == '__main__':
             dfAge = int(age.days / 30.4375)
             table = data_import.importCSV(genderTables[gender][1])
             row = table[(table.iloc[:,0] == dfAge)]
-            #title = 'Height percentile for: \n gender {0}, {1} years old ({2} months) \n and height: {3}'.format(gender, int((age.days / 30.4375) / 12), int(age.days / 30.4375), height)
-            #table.plot(ax = ax, x=table.iloc[:,0], y=percentiles, title=title, fontsize=10)
-            #ax.plot(int(age.days / 30.4375), height, 'g*')
-            #plt.xticks(rotation=45)
-            #fig.savefig('height.png')
         pct = 'P01'
         for p in percentiles:
             if row[p].values[0] < height:
@@ -80,22 +69,10 @@ if __name__ == '__main__':
             pct = 6
             
         title = 'Height percentile ({4}) for: gender {0}, {1} years old ({2} months) and height: {3} cm'.format(gender, int((age.days / 30.4375) / 12), int(age.days / 30.4375), height, p)
-        #plt.text(0.5, 1.08, title, horizontalalignment='center', fontsize=10, transform = ax.transAxes)    
         ax.set_title(title, fontdict={'fontsize': 10, 'verticalalignment':'bottom'}, y=1.08)
-        table.plot(ax = ax, x=table.iloc[:,0], y=percentiles, fontsize=10, legend=False)
-        
-        
-        
-        
+        table.plot(ax = ax, x=table.iloc[:,0], y=percentiles, fontsize=10, legend=False)        
         ax.plot(dfAge, height, 'g*')
-        #plt.xticks(rotation=45)
-          #ax2 = fig.add_axes([0.5, 0.3, 0.3, 0.5])
         idx = table[(table.iloc[:,0] == dfAge)].index.values[0]
-           
-            #print(table.loc[idx-5:idx+5,percentiles])
-            #print(table.iloc[idx-5:idx+5,0])
-            #table.plot(ax = ax2, x=table.iloc[idx-5:idx+5,0], y=table.loc[idx-5:idx+5,percentiles], fontsize=10)
-            #ax2.plot(x=table.iloc[idx-5:idx+5,0], y = table.iloc[idx-5:idx+5,6])
         axins = zoomed_inset_axes(ax, 7, loc=4)
         table.plot(ax = axins, x=table.iloc[:,0], y=percentiles, legend=False)
         axins.plot(dfAge, height, 'g*')
@@ -103,16 +80,12 @@ if __name__ == '__main__':
         x1, x2, y1, y2 = int(dfAge - 0.02 * table.iloc[-1,0]), int(dfAge + 0.02 * table.iloc[-1,0]), height-2, height+2
         if x1 < 0:
             x1 = 0
-            #x2 = age.days + 100
         if x2 > table.iloc[-1,0]:
             x2 = table.iloc[-1,0]
-            #x1 = age.days - 100
         if height-2 < table.iloc[0,-len(percentiles)]:
             y1 = table.iloc[0,-len(percentiles)]
-            #y2 = y1 + 4
         if height+2 > table.iloc[-1,-1]:
             y2 = table.iloc[-1,-1]
-            #y1 = height - 2
         print(dfAge, x1, x2 , y1, y2)
         axins.set_xlim(x1, x2)
         axins.set_ylim(y1, y2)
@@ -127,7 +100,7 @@ if __name__ == '__main__':
     BPtable = pd.DataFrame()
     BPtable = data_import.importPDF(pdffile='child_tbl.pdf')
     dob = 0
-    '''while dob == 0:
+    while dob == 0:
         dob = input('Enter date of birth as YYYY/MM/DD e.g 2000/12/01: ')
         try:
             dob = re.sub('[^0-9]', '', dob)
@@ -195,12 +168,12 @@ if __name__ == '__main__':
             print('No BP dia specified - app looking for a norm values')
             bpsys = ''
             break
-        '''
+        '''For testing purpose only
     gender = 'M'
     height = 60
     bpsys = 100
     bpdia = 57
-    dob = dt.datetime(2017,6,8)
+    dob = dt.datetime(2017,6,8)'''
     pct, p = getHeightPercentile(height, dob, gender)
     age = dt.datetime.today() - dob
     age = int(age.days / 30.4375 / 12)
@@ -269,7 +242,5 @@ if __name__ == '__main__':
           format(gender, age, height, p, BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct].values[0],
                  BPtable[(BPtable['Age'] == age) & (BPtable['BP_percentile'] == 90) & (BPtable['Gender'] == gender)].iloc[:,pct+7].values[0]))
     
-    
-    #plt.tight_layout()
     fig.subplots_adjust(hspace=0.4)
     fig.savefig('height.png', bbox_extra_artists=(lgd), bbox_inches='tight')
